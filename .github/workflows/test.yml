@@ -1,0 +1,32 @@
+name: test
+
+on:
+  pull_request:
+    branches:
+      - main
+      - feature/**
+
+jobs:
+  fmt:
+    timeout-minutes: 3
+    name: fmt
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - uses: grandcolline/golang-github-actions@v1.1.0
+      with:
+        run: fmt
+        token: ${{ secrets.GITHUB_TOKEN }}
+        comment: true
+
+  lint:
+    timeout-minutes: 3
+    name: lint
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - uses: grandcolline/golang-github-actions@v1.1.0
+      with:
+        run: lint
+        token: ${{ secrets.GITHUB_TOKEN }}
+        comment: true
