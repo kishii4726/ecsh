@@ -104,8 +104,7 @@ func main() {
 
 	aws_profile := chooseValueFromPrompt("Please enter aws profile(Default: default)", "default")
 
-	// set config
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(aws_region))
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(aws_region), config.WithSharedConfigProfile(aws_profile))
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
