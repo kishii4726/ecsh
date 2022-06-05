@@ -31,23 +31,23 @@ func chooseValueFromPrompt(l string, d string) string {
 
 func chooseValueFromPromptItems(l string, i []string) string {
 	prompt := promptui.Select{
-		Label: label,
-		Items: items,
+		Label: l,
+		Items: i,
 	}
-	_, selected_value, err := prompt.Run()
+	_, v, err := prompt.Run()
 	if err != nil {
 		log.Fatalf("Prompt failed %v\n", err)
 	}
 
-	return selected_value
+	return v
 }
 
-func getEcsClusters(client *ecs.Client) []string {
-	list_clusters, err := client.ListClusters(context.TODO(), &ecs.ListClustersInput{})
+func getEcsClusters(c *ecs.Client) []string {
+	resp, err := c.ListClusters(context.TODO(), &ecs.ListClustersInput{})
 	if err != nil {
 		log.Fatalf("ListClusters failed %v\n", err)
 	}
-	ecs_cluster_arns := list_clusters.ClusterArns
+	ecs_cluster_arns := resp.ClusterArns
 	if len(ecs_cluster_arns) == 0 {
 		log.Fatalf("Cluster does not exist")
 	}
@@ -60,13 +60,13 @@ func getEcsClusters(client *ecs.Client) []string {
 }
 
 func getEcsServices(client *ecs.Client, ecs_cluster string) []string {
-	list_services, err := client.ListServices(context.TODO(), &ecs.ListServicesInput{
+	resp, err := client.ListServices(context.TODO(), &ecs.ListServicesInput{
 		Cluster: aws.String(ecs_cluster),
 	})
 	if err != nil {
 		log.Fatalf("ListServices failed %v\n", err)
 	}
-	ecs_service_arns := list_services.ServiceArns
+	ecs_service_arns := resp.ServiceArns
 	if len(ecs_service_arns) == 0 {
 		log.Fatalf("Service does not exist")
 	}
@@ -79,14 +79,14 @@ func getEcsServices(client *ecs.Client, ecs_cluster string) []string {
 }
 
 func getEcsTaskIds(client *ecs.Client, ecs_cluster string, ecs_service string) []string {
-	list_tasks, err := client.ListTasks(context.TODO(), &ecs.ListTasksInput{
+	resp, err := client.ListTasks(context.TODO(), &ecs.ListTasksInput{
 		Cluster:     aws.String(ecs_cluster),
 		ServiceName: aws.String(ecs_service),
 	})
 	if err != nil {
 		log.Fatalf("ListTasks failed %v\n", err)
 	}
-	ecs_task_arns := list_tasks.TaskArns
+	ecs_task_arns := resp.TaskArns
 	if len(ecs_task_arns) == 0 {
 		log.Fatalf("Task does not exist")
 	}
@@ -110,12 +110,10 @@ func main() {
 	}
 	client := ecs.NewFromConfig(cfg)
 
-	// select cluster
-	ecs_cluster := chooseValueFromItems("Select ECS Cluster", getEcsClusters(client))
-	ecs_service := chooseValueFromItems("Select ECS Service", getEcsServices(client, ecs_cluster))
-	ecs_task_id := chooseValueFromItems("Select ECS Task Id", getEcsTaskIds(client, ecs_cluster, ecs_service))
+	ecs_cluster := chooseValueFromPromptItems("Select ECS Cluster", getEcsClusters(client))
+	ecs_service := chooseValueFromPromptItems("Select ECS Service", getEcsServices(client, ecs_cluster))
+	ecs_task_id := chooseValueFromPromptItems("Select ECS Task Id", getEcsTaskIds(client, ecs_cluster, ecs_service))
 
-	// select container
 	describe_tasks, err := client.DescribeTasks(context.TODO(), &ecs.DescribeTasksInput{
 		Tasks:   []string{ecs_task_id},
 		Cluster: aws.String(ecs_cluster),
@@ -126,9 +124,8 @@ func main() {
 	for _, v := range ecs_containers {
 		ecs_container_names = append(ecs_container_names, *v.Name)
 	}
-	ecs_container := chooseValueFromItems("Select ECS Container", ecs_container_names)
+	ecs_container := chooseValueFromPromptItems("Select ECS Container", ecs_container_names)
 
-	// get runtimeId
 	var ecs_runtime_id string
 	for _, v := range ecs_containers {
 		if *v.Name == ecs_container {
@@ -136,10 +133,8 @@ func main() {
 		}
 	}
 
-	// select shell
-	ecs_shell := chooseValueFromItems("Select Shell", []string{"sh", "bash"})
+	ecs_shell := chooseValueFromPromptItems("Select Shell", []string{"sh", "bash"})
 
-	// execute command
 	out, err := client.ExecuteCommand(context.TODO(), &ecs.ExecuteCommandInput{
 		Command:     aws.String(ecs_shell),
 		Interactive: true,
@@ -154,7 +149,6 @@ func main() {
 	}
 	targetJSON, err := json.Marshal(ssmTarget)
 
-	// start session
 	cmd := exec.Command(
 		"session-manager-plugin",
 		string(sess),
