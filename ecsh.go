@@ -17,7 +17,19 @@ import (
 	"github.com/manifoldco/promptui"
 )
 
-func chooseValueFromItems(label string, items []string) string {
+func chooseValueFromPrompt(l string, d string) string {
+	prompt := promptui.Prompt{
+		Label:   l,
+		Default: d,
+	}
+	v, err := prompt.Run()
+	if err != nil {
+		log.Fatalf("Prompt failed %v\n", err)
+	}
+	return v
+}
+
+func chooseValueFromPromptItems(l string, i []string) string {
 	prompt := promptui.Select{
 		Label: label,
 		Items: items,
@@ -88,8 +100,9 @@ func getEcsTaskIds(client *ecs.Client, ecs_cluster string, ecs_service string) [
 
 func main() {
 
-	// select region
-	aws_region := chooseValueFromItems("Select Region", []string{"ap-northeast-1", "us-east-1", "us-east-2"})
+	aws_region := chooseValueFromPrompt("Please enter aws region(Default: ap-northeast-1)", "ap-northeast-1")
+
+	aws_profile := chooseValueFromPrompt("Please enter aws profile(Default: default)", "default")
 
 	// set config
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(aws_region))
