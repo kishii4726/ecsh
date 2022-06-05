@@ -102,7 +102,7 @@ func main() {
 
 	aws_region := chooseValueFromPrompt("Please enter aws region(Default: ap-northeast-1)", "ap-northeast-1")
 
-	aws_profile := chooseValueFromPrompt("Please enter aws profile(Default: default)", "default")
+	aws_profile := chooseValueFromPrompt("Please enter aws profile", "")
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(aws_region), config.WithSharedConfigProfile(aws_profile))
 	if err != nil {
