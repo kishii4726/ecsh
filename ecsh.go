@@ -119,7 +119,6 @@ func main() {
 		Cluster: aws.String(ecs_cluster),
 	})
 	ecs_containers := describe_tasks.Tasks[0].Containers
-	fmt.Printf("%T\n", ecs_containers)
 	ecs_container_names := []string{}
 	for _, v := range ecs_containers {
 		ecs_container_names = append(ecs_container_names, *v.Name)
