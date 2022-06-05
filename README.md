@@ -15,4 +15,4 @@ $ sudo cp ecsh /usr/local/bin
 $ ecsh
 ```
 
-![ecsh_v0 0 3](https://user-images.githubusercontent.com/46281949/172049188-d9e1c952-a8e8-4517-8692-df714db31a36.gif)
+![ecsh_v0 0 3](https://user-images.githubusercontent.com/46281949/172049436-2c3eb70a-6b5c-4ffd-bc55-372d3a06bfed.gif)
