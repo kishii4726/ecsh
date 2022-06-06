@@ -102,7 +102,7 @@ func main() {
 
 	aws_region := chooseValueFromPrompt("Please enter aws region(Default: ap-northeast-1)", "ap-northeast-1")
 
-	aws_profile := chooseValueFromPrompt("Please enter aws profile", "")
+	aws_profile := chooseValueFromPrompt("Please enter aws profile(If empty, default settings are loaded)", "")
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(aws_region), config.WithSharedConfigProfile(aws_profile))
 	if err != nil {
@@ -142,11 +142,11 @@ func main() {
 		Container:   aws.String(ecs_container),
 	})
 	sess, _ := json.Marshal(out.Session)
-	var target = fmt.Sprintf("ecs:%s_%s_%s", ecs_cluster, ecs_task_id, ecs_runtime_id)
-	var ssmTarget = ssm.StartSessionInput{
+	target := fmt.Sprintf("ecs:%s_%s_%s", ecs_cluster, ecs_task_id, ecs_runtime_id)
+	ssm_target := ssm.StartSessionInput{
 		Target: &target,
 	}
-	targetJSON, err := json.Marshal(ssmTarget)
+	targetJSON, err := json.Marshal(ssm_target)
 
 	cmd := exec.Command(
 		"session-manager-plugin",
