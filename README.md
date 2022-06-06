@@ -1,6 +1,9 @@
 # ecsh
 ecsh is a tool to execute ECS Exec with ease.
 
+# Requirement
+- [session-manager-plugin](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
+
 # Install
 ## Mac
 ```
