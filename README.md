@@ -1,5 +1,5 @@
 # ecsh
-ecsh is a tool to execute ECS exec with ease.
+ecsh is a tool to execute ECS Exec with ease.
 
 # Install
 ```
