@@ -2,10 +2,23 @@
 ecsh is a tool to execute ECS Exec with ease.
 
 # Install
+## Mac
 ```
-$ wget https://github.com/kishii4726/ecsh/releases/download/v0.0.3/ecsh_v0.0.3_linux_amd64.zip
+$ ECSH_VERSION=0.0.3
+$ wget https://github.com/kishii4726/ecsh/releases/download/v${ECSH_VERSION}/ecsh_v${ECSH_VERSION}_darwin_amd64.zip
 
-$ unzip ecsh_v0.0.3_linux_amd64.zip ecsh
+$ unzip ecsh_v${ECSH_VERSION}_darwin_amd64.zip ecsh
+
+$ sudo cp ecsh /usr/local/bin
+```
+
+```
+## Linux
+```
+$ ECSH_VERSION=0.0.3
+$ wget https://github.com/kishii4726/ecsh/releases/download/v${ECSH_VERSION}/ecsh_v${ECSH_VERSION}_linux_amd64.zip
+
+$ unzip ecsh_v${ECSH_VERSION}_linux_amd64.zip ecsh
 
 $ sudo cp ecsh /usr/local/bin
 ```
