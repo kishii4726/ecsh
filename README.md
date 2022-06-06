@@ -12,7 +12,6 @@ $ unzip ecsh_v${ECSH_VERSION}_darwin_amd64.zip ecsh
 $ sudo cp ecsh /usr/local/bin
 ```
 
-```
 ## Linux
 ```
 $ ECSH_VERSION=0.0.3
